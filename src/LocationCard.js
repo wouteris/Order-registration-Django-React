@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 
 const LocationCard = (props) => {
@@ -26,6 +26,7 @@ const LocationCard = (props) => {
           style={{ color: "blue", marginTop: "7px" }}
         ></i>
       </Link>
+      <Outlet />
     </div>
   );
 };

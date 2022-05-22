@@ -1,10 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 
 class AddLocation extends React.Component {
   state = {
     locationCode: "",
     locationDescription: "",
   };
+
+ 
+
 
   add = (e) => {
     e.preventDefault();
@@ -16,7 +21,11 @@ class AddLocation extends React.Component {
     this.props.addLocationHandler(this.state);
     
     this.setState({ locationCode: "", locationDescription: "" });
-    this.props.history.push("/");
+    //this.props.history.push("/");
+    console.log("Test")
+  
+    
+
     
   };
 

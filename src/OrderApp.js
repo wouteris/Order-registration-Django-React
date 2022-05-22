@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { uuid } from "uuidv4";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import api from "./api/products";
 import "./App.css";
 import Header from "./Header";
@@ -97,27 +96,25 @@ function OrderApp() {
     <div>
     <div className="ui container">
       
-      <Router>
-       <Header /> 
-        <Switch>
+      
+       
+        <Routes>
           <Route
             path="/"
             exact
-            render={(props) => (
-              <OrderList
-                {...props}
+            element={<OrderList
+                
                 orders={searchTerm.length < 1 ? orders : searchResults}
                 getOrderId={removeOrderHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
               />
-            )}
+            }
           />
           <Route
-            path="/add"
-            render={(props) => (
-              <AddOrder {...props} addOrderHandler={addOrderHandler} />
-            )}
+            path="add"
+            element={<AddOrder addOrderHandler={addOrderHandler} />
+            }
           />
 
           <Route
@@ -131,8 +128,8 @@ function OrderApp() {
           />
 
           <Route path="/order/:id" component={OrderDetail} />
-        </Switch>
-      </Router>
+        </Routes>
+     
     </div>
     </div>
     );

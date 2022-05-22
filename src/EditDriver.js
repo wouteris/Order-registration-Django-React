@@ -1,9 +1,9 @@
 import React from "react";
 
-class EditOrder extends React.Component {
+class EditDriver extends React.Component {
   constructor(props) {
     super(props);
-    const { id, driverCode, driverDescription } = props.location.state.order;
+    const { id, driverCode, driverDescription } = props.driver.state.driver;
     this.state = {
       id,
       driverCode,
@@ -13,12 +13,12 @@ class EditOrder extends React.Component {
 
   update = (e) => {
     e.preventDefault();
-    if (this.state.orderID === "" || this.state.orderID === "") {
+    if (this.state.driverCode === "" || this.state.driverDescription === "") {
       alert("ALl the fields are mandatory!");
       return;
     }
-    this.props.updateOrderHandler(this.state);
-    this.setState({ orderID: "", loadingDate: "" });
+    this.props.updateDriverHandler(this.state);
+    this.setState({ driverCode: "", driverDescription: "" });
     this.props.history.push("/");
   };
   render() {
@@ -30,20 +30,20 @@ class EditOrder extends React.Component {
             <label>driverCode</label>
             <input
               type="text"
-              name="orderID"
-              placeholder="orderID"
-              value={this.state.orderID}
-              onChange={(e) => this.setState({ orderID: e.target.value })}
+              name="driverCode"
+              placeholder="driverCode"
+              value={this.state.driverCode}
+              onChange={(e) => this.setState({ driverCode: e.target.value })}
             />
           </div>
           <div className="field">
             <label>driverDescription</label>
             <input
               type="text"
-              name="orderID"
-              placeholder="orderID"
-              value={this.state.orderID}
-              onChange={(e) => this.setState({ orderID: e.target.value })}
+              name="driverDescription"
+              placeholder="driverDescription"
+              value={this.state.driverDescription}
+              onChange={(e) => this.setState({ driverDescription: e.target.value })}
             />
           </div>
           <button className="ui button blue">Update</button>
@@ -53,4 +53,4 @@ class EditOrder extends React.Component {
   }
 }
 
-export default EditOrder;
+export default EditDriver;

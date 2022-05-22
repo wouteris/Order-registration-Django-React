@@ -28,7 +28,7 @@ const OrderList = (props) => {
     <div className="main">
       <h2>
         Order List
-        <Link to="/add">
+        <Link to="add">
           <button className="ui button blue right">Add Order</button>
         </Link>
       </h2>

@@ -1,18 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import OrderApp from './OrderApp';
 import ProductApp from './ProductApp';
 import Import from './import';
-import LocationApp from './LocationApp'
-import ShiftApp from './ShiftApp'
-import VehicleApp from './VehicleApp'
+import LocationApp from './LocationApp';
+import ShiftApp from './ShiftApp';
+import VehicleApp from './VehicleApp';
+import App from './App';
+import Header from './Header';
 
 
 
-ReactDOM.render(
-  <React.StrictMode>
-    <OrderApp  />
-  </React.StrictMode>,
-  document.getElementById('root')
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root")
 );
+root.render(<App />);
 

@@ -24,7 +24,7 @@ class AddOrder extends React.Component {
   render() {
     return (
       <div className="ui main">
-        <h2>Add Product</h2>
+        <h2>Add Order</h2>
         <form className="ui form" onSubmit={this.add}>
           <div className="field">
             <label>orderID</label>

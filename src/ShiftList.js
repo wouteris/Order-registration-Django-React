@@ -28,7 +28,7 @@ const ShiftList = (props) => {
     <div className="main">
       <h2>
         Shift List
-        <Link to="/add">
+        <Link to="add">
           <button className="ui button blue right">Add Shift</button>
         </Link>
       </h2>

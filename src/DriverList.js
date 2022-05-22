@@ -1,20 +1,20 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
-import LocationCard from "./LocationCard";
+import DriverCard from "./DriverCard";
 
-const LocationList = (props) => {
+const DriverList = (props) => {
   const inputEl = useRef("");
-  const deleteLocationHandler = (id) => {
-    props.getLocationId(id);
+  const deleteDriverHandler = (id) => {
+    props.getDriverId(id);
   };
 
  
-  const renderLocationList = props.locations.map((location) => {
+  const renderDriverList = props.drivers.map((driver) => {
     return (
-      <LocationCard
-        product={location}
-        clickHandler={deleteLocationHandler}
-        key={location.id}
+      <DriverCard
+        driver={driver}
+        clickHandler={deleteDriverHandler}
+        key={driver.id}
       />
     );
   });
@@ -27,9 +27,9 @@ const LocationList = (props) => {
   return (
     <div className="main">
       <h2>
-        Location List
-        <Link to="/add">
-          <button className="ui button blue right">Add Product</button>
+        Driver List
+        <Link to="add">
+          <button className="ui button blue right">Add Driver</button>
         </Link>
       </h2>
       <div className="ui search">
@@ -46,12 +46,12 @@ const LocationList = (props) => {
         </div>
       </div>
       <div className="ui celled list">
-      {renderLocationList.length > 0
-          ? renderLocationList
-          : "No products available"}
+      {renderDriverList.length > 0
+          ? renderDriverList
+          : "No drivers available"}
       </div>
     </div>
   );
 };
 
-export default LocationList;
+export default DriverList;

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Link } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import LocationCard from "./LocationCard";
 
 const LocationList = (props) => {
@@ -28,9 +28,10 @@ const LocationList = (props) => {
     <div className="main">
       <h2>
         Location List
-        <Link to="/add">
+        <Link to="add">
           <button className="ui button blue right">Add Location</button>
         </Link>
+        <Outlet />
       </h2>
       <div className="ui search">
         <div className="ui icon input">

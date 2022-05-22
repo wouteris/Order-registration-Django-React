@@ -13,7 +13,7 @@ class AddDriver extends React.Component {
       return;
     }
   
-    this.props.addOrderHandler(this.state);
+    this.props.addDriverHandler(this.state);
     
     this.setState({ driverCode: "", driverDescription: "" });
     this.props.history.push("/");

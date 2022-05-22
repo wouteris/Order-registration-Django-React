@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { uuid } from "uuidv4";
-import api from "./api/products";
+import { Routes, Route, useRouteMatch, Link } from "react-router-dom";
 import "./App.css";
 import Header from "./Header";
 import LocationList from "./LocationList";
 import AddLocation from "./AddLocation";
 import LocationDetail from "./LocationDetail";
 import EditLocation from "./EditLocation";
+import ProductApp from "./ProductApp";
 import axios from "axios";
 
 function LocationApp() {
   const [locations, setLocations] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  
+  
+  
+  
   //RetrieveLocations
   const retrieveLocations =  async () => {
     const response = await axios.get("api/locations");
@@ -23,14 +26,9 @@ function LocationApp() {
   const addLocationHandler = async (location) => {
     console.log(location);
 
-    //console.log(uuid());
+  
    const request = {
-   //   id: uuid(),
-   //...product,
-     //id: 2,
-     ...location,
-     //productCode: this.state.productCode,
-    //productDescription:"NU"
+     ...location
    };
     console.log(request);
     const response = await axios.post("/api/locations/", request);
@@ -41,8 +39,6 @@ function LocationApp() {
    
     
   };
-
-  
 
   const updateLocationHandler = async (location) => {
     const response = await axios.put(`/api/locations/${location.id}/`, location);
@@ -79,8 +75,6 @@ function LocationApp() {
   };
 
   useEffect(() => {
-    // const retriveProducts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    // if (retriveProducts) setProducts(retriveProducts);
     const getAllLocations = async () => {
       const allLocations = await retrieveLocations();
       if (allLocations) setLocations(allLocations);
@@ -89,52 +83,49 @@ function LocationApp() {
     getAllLocations();
   }, []);
 
-  //useEffect(() => {
-  //  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
-  //}, [products]);
+ 
 
   return (
     <div>
     <div className="ui container">
       
-      <Router>
-       <Header /> 
-        <Switch>
+     
+      
+        <Routes>
           <Route
             path="/"
-            exact
-            render={(props) => (
-              <LocationList
-                {...props}
+            
+            element={<LocationList
+                
                 locations={searchTerm.length < 1 ? locations : searchResults}
                 getLocationId={removeLocationHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
               />
-            )}
+            }
           />
-          <Route
-            path="/add"
-            render={(props) => (
-              <AddLocation {...props} addLocationHandler={addLocationHandler} />
-            )}
+            <Route
+            path="add"
+            element={<AddLocation
+                addLocationHandler={addLocationHandler}
+              />
+            }
           />
 
           <Route
-            path="/edit"
-            render={(props) => (
-              <EditLocation
-                {...props}
+            path="edit"
+            element={<EditLocation
                 updateLocationHandler={updateLocationHandler}
               />
-            )}
+            }
           />
 
-          <Route path="/location/:id" component={LocationDetail} />
-        </Switch>
-      </Router>
+          <Route path="/location/:id" element={LocationDetail} />
+        </Routes>
+    
     </div>
     </div>
+    
     );
 }
 

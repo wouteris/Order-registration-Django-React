@@ -1,36 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { uuid } from "uuidv4";
-import api from "./api/products";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Header";
 import DriverList from "./DriverList";
 import AddDriver from "./AddDriver";
 import DriverDetail from "./DriverDetail";
 import EditDriver from "./EditDriver";
 import axios from "axios";
 
-function LocationApp() {
+function DriverApp() {
   const [drivers, setDrivers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  //RetrieveProducts
+
   const retrieveDrivers =  async () => {
-    const response = await axios.get("api/locations");
+    const response = await axios.get("api/drivers");
     return response.data;
   };
 
   const addDriverHandler = async (driver) => {
     console.log(driver);
-
-    //console.log(uuid());
    const request = {
-   //   id: uuid(),
-   //...product,
-     //id: 2,
      ...driver,
-     //productCode: this.state.productCode,
-    //productDescription:"NU"
+
    };
     console.log(request);
     const response = await axios.post("/api/drivers/", request);
@@ -44,20 +35,20 @@ function LocationApp() {
 
   
 
-  const updateDriverHandler = async (location) => {
-    const response = await axios.put(`/api/drivers/${location.id}/`, location);
+  const updateDriverHandler = async (driver) => {
+    const response = await axios.put(`/api/drivers/${driver.id}/`, driver);
     const { id, driverCode, driverDescription } = response.data;
     setDrivers(
-      drivers.map((location) => {
-        return location.id === id ? { ...response.data } : location;
+      drivers.map((driver) => {
+        return driver.id === id ? { ...response.data } : driver;
       })
     );
   };
 
   const removeDriverHandler = async (id) => {
     await axios.delete(`/api/drivers/${id}`);
-    const newDriverList = drivers.filter((location) => {
-      return location.id !== id;
+    const newDriverList = drivers.filter((driver) => {
+      return driver.id !== id;
     });
 
     setDrivers(newDriverList);
@@ -66,8 +57,8 @@ function LocationApp() {
   const searchHandler = (searchTerm) => {
     setSearchTerm(searchTerm);
     if (searchTerm !== "") {
-      const newDriverList = drivers.filter((location) => {
-        return Object.values(location)
+      const newDriverList = drivers.filter((driver) => {
+        return Object.values(driver)
           .join(" ")
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
@@ -79,8 +70,7 @@ function LocationApp() {
   };
 
   useEffect(() => {
-    // const retriveProducts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    // if (retriveProducts) setProducts(retriveProducts);
+
     const getAllDrivers = async () => {
       const allDrivers = await retrieveDrivers();
       if (allDrivers) setDrivers(allDrivers);
@@ -89,35 +79,30 @@ function LocationApp() {
     getAllDrivers();
   }, []);
 
-  //useEffect(() => {
-  //  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
-  //}, [products]);
 
   return (
     <div>
     <div className="ui container">
       
-      <Router>
-       <Header /> 
-        <Switch>
+     
+      
+        <Routes>
           <Route
             path="/"
             exact
-            render={(props) => (
-              <DriverList
-                {...props}
-                locations={searchTerm.length < 1 ? drivers : searchResults}
-                getLocationId={removeDriverHandler}
+            element={<DriverList
+                
+                drivers={searchTerm.length < 1 ? drivers : searchResults}
+                getDriverId={removeDriverHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
               />
-            )}
+            }
           />
           <Route
-            path="/add"
-            render={(props) => (
-              <AddDriver {...props} addDriverHandler={addDriverHandler} />
-            )}
+            path="add"
+            element={<AddDriver  addDriverHandler={addDriverHandler} />
+            }
           />
 
           <Route
@@ -125,17 +110,17 @@ function LocationApp() {
             render={(props) => (
               <EditDriver
                 {...props}
-                updateLocationHandler={updateDriverHandler}
+                updateDriverHandler={updateDriverHandler}
               />
             )}
           />
 
-          <Route path="/location/:id" component={DriverDetail} />
-        </Switch>
-      </Router>
+          <Route path="/driver/:id" component={DriverDetail} />
+        </Routes>
+      
     </div>
     </div>
     );
 }
 
-export default LocationApp;
+export default DriverApp;

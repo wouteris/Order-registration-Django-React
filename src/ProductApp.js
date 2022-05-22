@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { uuid } from "uuidv4";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import api from "./api/products";
 import "./App.css";
 import Header from "./Header";
@@ -23,34 +22,12 @@ function ProductApp() {
 
   const addProductHandler = async (product) => {
     console.log(product);
-
-    //console.log(uuid());
    const request = {
-   //   id: uuid(),
-   //...product,
-     //id: 2,
-     ...product,
-     //productCode: this.state.productCode,
-    //productDescription:"NU"
+     ...product
    };
-    console.log(request);
     const response = await axios.post("/api/products/", request);
-    console.log(response);
     setProducts([...products, response.data]);
-
-    
-   
-    
   };
-
-  const addProducts = {
-    id: 2,
-    productCode: "NU",
-    productDescription: "NU",
-  }
-  api.post('api/products', addProducts)
-  .then(res => console.log(res.data));
-  
 
   const updateProductHandler = async (product) => {
     const response = await axios.put(`/api/products/${product.id}/`, product);
@@ -87,8 +64,6 @@ function ProductApp() {
   };
 
   useEffect(() => {
-    // const retriveProducts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    // if (retriveProducts) setProducts(retriveProducts);
     const getAllProducts = async () => {
       const allProducts = await retrieveProducts();
       if (allProducts) setProducts(allProducts);
@@ -97,35 +72,28 @@ function ProductApp() {
     getAllProducts();
   }, []);
 
-  //useEffect(() => {
-  //  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
-  //}, [products]);
-
   return (
     <div>
     <div className="ui container">
       
-      <Router>
-       <Header /> 
-        <Switch>
+     
+        
+        <Routes>
           <Route
             path="/"
-            exact
-            render={(props) => (
-              <ProductList
-                {...props}
+            element={<ProductList
+               
                 products={searchTerm.length < 1 ? products : searchResults}
                 getProductId={removeProductHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
               />
-            )}
+            }
           />
           <Route
-            path="/add"
-            render={(props) => (
-              <AddProduct {...props} addProductHandler={addProductHandler} />
-            )}
+            path="add"
+            element={<AddProduct  addProductHandler={addProductHandler} />
+            }
           />
 
           <Route
@@ -139,8 +107,8 @@ function ProductApp() {
           />
 
           <Route path="/product/:id" component={ProductDetail} />
-        </Switch>
-      </Router>
+        </Routes>
+     
     </div>
     </div>
     );

@@ -28,7 +28,7 @@ const VehicleList = (props) => {
     <div className="main">
       <h2>
         Vehicle List
-        <Link to="/add">
+        <Link to="add">
           <button className="ui button blue right">Add Vehicle</button>
         </Link>
       </h2>

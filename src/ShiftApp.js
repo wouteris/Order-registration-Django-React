@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { uuid } from "uuidv4";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import api from "./api/products";
 import "./App.css";
 import Header from "./Header";
@@ -105,27 +104,25 @@ function ShiftApp() {
     <div>
     <div className="ui container">
       
-      <Router>
-       <Header /> 
-        <Switch>
+      
+       
+        <Routes>
           <Route
             path="/"
             exact
-            render={(props) => (
-              <ShiftList
-                {...props}
+            element={<ShiftList
+                
                 shifts={searchTerm.length < 1 ? shifts : searchResults}
                 getShiftId={removeShiftHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
               />
-            )}
+            }
           />
           <Route
-            path="/add"
-            render={(props) => (
-              <AddShift {...props} addShiftHandler={addShiftHandler} />
-            )}
+            path="add"
+            element={<AddShift  addShiftHandler={addShiftHandler} />
+            }
           />
 
           <Route
@@ -139,8 +136,8 @@ function ShiftApp() {
           />
 
           <Route path="/shift/:id" component={ShiftDetail} />
-        </Switch>
-      </Router>
+        </Routes>
+      
     </div>
     </div>
     );

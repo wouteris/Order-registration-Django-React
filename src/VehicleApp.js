@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { uuid } from "uuidv4";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
 import Header from "./Header";
@@ -100,27 +99,25 @@ function VehicleApp() {
     <div>
     <div className="ui container">
       
-      <Router>
-       <Header /> 
-        <Switch>
+      
+      
+        <Routes>
           <Route
             path="/"
             exact
-            render={(props) => (
-              <VehicleList
-                {...props}
+            element={<VehicleList
+                
                 vehicles={searchTerm.length < 1 ? vehicles : searchResults}
                 getVehicleId={removeVehicleHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
               />
-            )}
+            }
           />
           <Route
-            path="/add"
-            render={(props) => (
-              <AddVehicle {...props} addVehicleHandler={addVehicleHandler} />
-            )}
+            path="add"
+            element={<AddVehicle addVehicleHandler={addVehicleHandler} />
+            }
           />
 
           <Route
@@ -134,8 +131,8 @@ function VehicleApp() {
           />
 
           <Route path="/vehicle/:id" component={VehicleDetail} />
-        </Switch>
-      </Router>
+        </Routes>
+      
     </div>
     </div>
     );

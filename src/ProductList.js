@@ -28,7 +28,7 @@ const ProductList = (props) => {
     <div className="main">
       <h2>
         Product List
-        <Link to="/add">
+        <Link to="add">
           <button className="ui button blue right">Add Product</button>
         </Link>
       </h2>
