@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 
 class AddLocation extends React.Component {
+  
   state = {
     locationCode: "",
     locationDescription: "",

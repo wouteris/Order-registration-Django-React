@@ -121,13 +121,12 @@ function VehicleApp() {
           />
 
           <Route
-            path="/edit"
-            render={(props) => (
-              <EditVehicle
-                {...props}
+            path="edit"
+            element={<EditVehicle 
+                
                 updateVehicleHandler={updateVehicleHandler}
               />
-            )}
+            }
           />
 
           <Route path="/vehicle/:id" component={VehicleDetail} />

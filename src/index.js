@@ -8,6 +8,9 @@ import ShiftApp from './ShiftApp';
 import VehicleApp from './VehicleApp';
 import App from './App';
 import Header from './Header';
+import TestAdd from './test';
+import Component1 from './Component1';
+import Component2 from './Component2';
 
 
 
@@ -15,5 +18,10 @@ import Header from './Header';
 const root = ReactDOM.createRoot(
   document.getElementById("root")
 );
-root.render(<App />);
+root.render(<div>
+  <App  />
+  
+  </div> 
+
+);
 

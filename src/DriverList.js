@@ -2,24 +2,28 @@ import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import DriverCard from "./DriverCard";
 
-const DriverList = (props) => {
+function DriverList  (props) {
   const inputEl = useRef("");
+
   const deleteDriverHandler = (id) => {
     props.getDriverId(id);
   };
 
- 
   const renderDriverList = props.drivers.map((driver) => {
     return (
       <DriverCard
         driver={driver}
         clickHandler={deleteDriverHandler}
         key={driver.id}
+        editRow={props.editRow}
+        currentUser={props.currentUser}
+        editing={props.editing}
+        setEditing={props.setEditing}
+        
       />
     );
   });
  
-
 
   const getSearchTerm = () => {
     props.searchKeyword(inputEl.current.value);

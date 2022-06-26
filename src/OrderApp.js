@@ -118,13 +118,12 @@ function OrderApp() {
           />
 
           <Route
-            path="/edit"
-            render={(props) => (
-              <EditOrder
-                {...props}
+            path="edit"
+            element={<EditOrder
+                
                 updateOrderHandler={updateOrderHandler}
               />
-            )}
+            }
           />
 
           <Route path="/order/:id" component={OrderDetail} />

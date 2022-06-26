@@ -97,13 +97,12 @@ function ProductApp() {
           />
 
           <Route
-            path="/edit"
-            render={(props) => (
-              <EditProduct
-                {...props}
+            path="edit"
+            element={<EditProduct
+              
                 updateProductHandler={updateProductHandler}
               />
-            )}
+            }
           />
 
           <Route path="/product/:id" component={ProductDetail} />

@@ -4,46 +4,62 @@ import "./App.css";
 import DriverList from "./DriverList";
 import AddDriver from "./AddDriver";
 import DriverDetail from "./DriverDetail";
+import Component1 from "./Component1";
 import EditDriver from "./EditDriver";
 import axios from "axios";
 
 function DriverApp() {
+  
+
+
+  const initialFormState = {id: null, driverCode: '', driverDescription: ''}
+
+
+  //Setting state
   const [drivers, setDrivers] = useState([]);
+  const [currentDriver, setCurrentDriver] = useState(initialFormState)
+  const [editing, setEditing] = useState(false)
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
-  const retrieveDrivers =  async () => {
+  
+  
+  const driversData = async () => {
     const response = await axios.get("api/drivers");
     return response.data;
   };
+  
+  
+  const result = (drivers) => Math.max(...drivers.map(val => val.id));
+  console.log(result(drivers));
+  
+  //CRUD operations
+  const addDriver = async driver => {
 
-  const addDriverHandler = async (driver) => {
-    console.log(driver);
-   const request = {
-     ...driver,
-
-   };
-    console.log(request);
+    const request = {
+      ...driver
+    };
+     console.log("Test",request);
     const response = await axios.post("/api/drivers/", request);
-    console.log(response);
-    setDrivers([...drivers, response.data]);
+      console.log(response);
 
     
-   
-    
-  };
+		setDrivers([ ...drivers, response.data ])
+	}
+  const updateDriver = async (id, updatedDriver) => {
+    const response = await axios.put(`/api/drivers/${id}/`, updatedDriver);
+
+		setEditing(false)
+
+    setDrivers(drivers.map(driver => (driver.id === id ? updatedDriver: driver)))
+	}
+ 
+  const editRow = driver => {
+    setEditing(true)
+    setCurrentDriver({id: driver.id, driverCode: driver.driverCode, driverDescription: driver.driverDescription})
+  }
 
   
-
-  const updateDriverHandler = async (driver) => {
-    const response = await axios.put(`/api/drivers/${driver.id}/`, driver);
-    const { id, driverCode, driverDescription } = response.data;
-    setDrivers(
-      drivers.map((driver) => {
-        return driver.id === id ? { ...response.data } : driver;
-      })
-    );
-  };
 
   const removeDriverHandler = async (id) => {
     await axios.delete(`/api/drivers/${id}`);
@@ -70,14 +86,14 @@ function DriverApp() {
   };
 
   useEffect(() => {
-
     const getAllDrivers = async () => {
-      const allDrivers = await retrieveDrivers();
+      const allDrivers = await driversData();
       if (allDrivers) setDrivers(allDrivers);
     };
 
     getAllDrivers();
   }, []);
+
 
 
   return (
@@ -92,30 +108,52 @@ function DriverApp() {
             exact
             element={<DriverList
                 
+                
                 drivers={searchTerm.length < 1 ? drivers : searchResults}
                 getDriverId={removeDriverHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
+                editing={editing}
+								setEditing={setEditing}
+								currentDriver={currentDriver}
+								updateDriver={updateDriver}
+                editRow={editRow}
+                driversData={driversData}
+                
+                
+                
               />
             }
           />
           <Route
             path="add"
-            element={<AddDriver  addDriverHandler={addDriverHandler} />
+            element={<AddDriver  
+              addDriver={addDriver}
+              />
             }
           />
 
           <Route
-            path="/edit"
-            render={(props) => (
-              <EditDriver
-                {...props}
-                updateDriverHandler={updateDriverHandler}
+            path="edit"
+            element={<EditDriver
+                state={{drivers}}
+                
+                editing={editing}
+								setEditing={setEditing}
+								currentDriver={currentDriver}
+								updateDriver={updateDriver}
+                
+                
               />
-            )}
+            }
           />
 
-          <Route path="/driver/:id" component={DriverDetail} />
+          <Route path=":id" element={<DriverDetail
+                currentDriver={currentDriver}
+                drivers={drivers}
+                
+          /> }
+          />
         </Routes>
       
     </div>

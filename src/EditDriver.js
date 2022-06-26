@@ -1,56 +1,66 @@
-import React from "react";
+import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-class EditDriver extends React.Component {
-  constructor(props) {
-    super(props);
-    const { id, driverCode, driverDescription } = props.driver.state.driver;
-    this.state = {
-      id,
-      driverCode,
-      driverDescription,
-    };
+function EditDriver(props) {
+
+  //
+  const [driver, setDriver] = useState(props.currentDriver)
+  const history = useNavigate();
+
+  //
+  useEffect(() => {
+
+    setDriver(props.currentDriver)
+    
+  } , [ props ]); 
+
+  //
+  const handleInputChange = event => {
+    const { name, value } = event.target
+
+    setDriver({ ...driver, [name]: value })
+  
+
   }
-
-  update = (e) => {
-    e.preventDefault();
-    if (this.state.driverCode === "" || this.state.driverDescription === "") {
-      alert("ALl the fields are mandatory!");
-      return;
-    }
-    this.props.updateDriverHandler(this.state);
-    this.setState({ driverCode: "", driverDescription: "" });
-    this.props.history.push("/");
-  };
-  render() {
+   
+  
+  //
     return (
       <div className="ui main">
         <h2>Edit driver</h2>
-        <form className="ui form" onSubmit={this.update}>
+        <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        props.setEditing(false)
+        props.updateDriver(driver.id, driver)
+        history('/Driver')
+      }}>
           <div className="field">
-            <label>driverCode</label>
+            <label>Code</label>
             <input
               type="text"
               name="driverCode"
-              placeholder="driverCode"
-              value={this.state.driverCode}
-              onChange={(e) => this.setState({ driverCode: e.target.value })}
+              placeholder="Code"
+              value={driver.driverCode}
+              onChange={handleInputChange}
             />
           </div>
           <div className="field">
-            <label>driverDescription</label>
+            <label>Description</label>
             <input
               type="text"
               name="driverDescription"
-              placeholder="driverDescription"
-              value={this.state.driverDescription}
-              onChange={(e) => this.setState({ driverDescription: e.target.value })}
+              placeholder="Description"
+              value={driver.driverDescription}
+              onChange={handleInputChange}
             />
           </div>
           <button className="ui button blue">Update</button>
+          <button claasName="ui button red">Cancel</button>
         </form>
       </div>
     );
   }
-}
+
 
 export default EditDriver;

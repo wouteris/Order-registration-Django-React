@@ -30,7 +30,7 @@ function LocationApp() {
    const request = {
      ...location
    };
-    console.log(request);
+    console.log("Test",request);
     const response = await axios.post("/api/locations/", request);
     console.log(response);
     setLocations([...locations, response.data]);

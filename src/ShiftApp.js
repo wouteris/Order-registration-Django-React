@@ -127,12 +127,11 @@ function ShiftApp() {
 
           <Route
             path="/edit"
-            render={(props) => (
-              <EditShift
-                {...props}
+            element={<EditShift
+               
                 updateShiftHandler={updateShiftHandler}
               />
-            )}
+            }
           />
 
           <Route path="/shift/:id" component={ShiftDetail} />
