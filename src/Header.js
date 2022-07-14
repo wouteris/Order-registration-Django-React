@@ -5,13 +5,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import LocationApp from './LocationApp';
 import { BrowserRouter as Router, Routes, Link, BrowserRouter } from "react-router-dom";
 
 
@@ -87,7 +85,7 @@ export default function Header() {
                 onClose={handleClose}
               >
                 <MenuItem component={ Link } to="/Driver">Driver</MenuItem>
-                <MenuItem component={ Link } to="/Location/">Location</MenuItem>
+                <MenuItem component={ Link } to="/Location">Location</MenuItem>
                 <MenuItem component={ Link } to="/Product">Product</MenuItem>
                 <MenuItem component={ Link } to="/Shift">Shift</MenuItem>
                 <MenuItem component={ Link } to="/Vehicle">Vehicle</MenuItem>

@@ -1,9 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import user from "./images/user.jpg";
 
-const ShiftDetail = (props) => {
-  const { shiftCode, shiftDescription } = props.location.state.shift;
+
+function ShiftDetail  (props) {
+  const [shift, setShift] = useState(props.currentShift)
+  const history = useNavigate();
+ 
+  
+  useEffect(() => {
+
+  setShift(props.currentShift)
+  
+  } , [ props ]); 
+
+
+ 
   return (
     <div className="main">
       <div className="ui card centered">
@@ -11,16 +23,17 @@ const ShiftDetail = (props) => {
       <img src={user} alt="user" />
         </div>
         <div className="content">
-          <div className="header">{shiftCode}</div>
-          <div className="description">{shiftDescription}</div>
+          <div className="header">shiftname:  {shift.shiftDescription}</div>
+          <div className="description">shiftcode: {shift.shiftCode} </div>
         </div>
       </div>
       <div className="center-div">
-        <Link to="/">
-          <button className="ui button blue center">
-            Back to Shift List
+        
+          <button onClick = {() =>history('/shift')} className="ui button blue center">
+            Back to Location List
+            
           </button>
-        </Link>
+        
       </div>
     </div>
   );

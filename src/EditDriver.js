@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 
 function EditDriver(props) {
 
@@ -56,7 +56,7 @@ function EditDriver(props) {
             />
           </div>
           <button className="ui button blue">Update</button>
-          <button claasName="ui button red">Cancel</button>
+          <button className="ui button red">Cancel</button>
         </form>
       </div>
     );

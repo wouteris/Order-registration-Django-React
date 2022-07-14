@@ -1,56 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-class AddShift extends React.Component {
-  state = {
-    shiftCode: "",
-    shiftDescription: "",
-  };
 
-  add = (e) => {
-    e.preventDefault();
-    if (this.state.shiftCode === "" || this.state.shiftDescription === "") {
-      alert("All the fields are mandatory!");
-      return;
-    }
-  
-    this.props.addShiftHandler(this.state);
+function AddShift(props) {
+  const initialFormState = { id: null, shiftCode: '', shiftDescription: ''}
+  const [ shift, setshift ] = useState(initialFormState)
+ 
+  const handleInputChange = event => {
+		const { name, value } = event.target
+		setshift({ ...shift, [name]: value })
     
-    this.setState({ shiftCode: "", shiftDescription: "" });
-    this.props.history.push("/");
-    
-  };
-
-
-  render() {
-    return (
-      <div className="ui main">
-        <h2>Add shift</h2>
-        <form className="ui form" onSubmit={this.add}>
-          <div className="field">
-            <label>shiftCode</label>
-            <input
-              type="text"
-              name="shiftCode"
-              placeholder="shiftCode"
-              value={this.state.shiftCode}
-              onChange={(e) => this.setState({ shiftCode: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label>loadingDate</label>
-            <input
-              type="text"
-              name="shiftDescription"
-              placeholder="shiftDescription"
-              value={this.state.shiftDescription}
-              onChange={(e) => this.setState({ shiftDescription: e.target.value })}
-            />
-          </div>
-          <button className="ui button blue">Add</button>
-        </form>
-      </div>
-    );
   }
+ 
+  const history = useNavigate();
+  
+  
+
+
+  return (
+    <div className="ui main">
+      <h2>Add shift</h2>
+      <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        if (!shift.shiftCode || !shift.shiftDescription) return
+
+        
+        
+        props.addShift(shift)
+        setshift(initialFormState)
+        history('/shift')
+
+      }} >
+        <div className="field">
+          <label>Code</label>
+          <input
+            type="text"
+            name="shiftCode"
+            placeholder="Code"
+            value={shift.shiftCode}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="field">
+          <label>Description</label>
+          <input
+            type="text"
+            name="shiftDescription"
+            placeholder="Description"
+            value={shift.shiftDescription}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button className="ui button blue">Add</button>
+        <button  className="ui button red">Cancel</button>
+      </form>
+    </div>
+  );
 }
 
-export default AddShift;
+
+export default AddShift

@@ -1,56 +1,66 @@
-import React from "react";
+import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
 
-class EditVehicle extends React.Component {
-  constructor(props) {
-    super(props);
-    const { id, vehicleCode, vehicleDescription } = props.location.state.vehicle;
-    this.state = {
-      id,
-      vehicleCode,
-      vehicleDescription,
-    };
+
+function EditVehicle(props) {
+
+  //
+  const [vehicle, setVehicle] = useState(props.currentVehicle)
+  const history = useNavigate();
+
+  //
+  useEffect(() => {
+
+    setVehicle(props.currentVehicle)
+    
+  } , [ props ]); 
+
+  //
+  const handleInputChange = event => {
+    const { name, value } = event.target
+
+    setVehicle({ ...vehicle, [name]: value })
+  
+
   }
-
-  update = (e) => {
-    e.preventDefault();
-    if (this.state.vehicleCode === "" || this.state.vehicleDescription === "") {
-      alert("ALl the fields are mandatory!");
-      return;
-    }
-    this.props.updateVehicleHandler(this.state);
-    this.setState({ vehicleCode: "", vehicleDescription: "" });
-    this.props.history.push("/");
-  };
-  render() {
+   
+  
+  //
     return (
       <div className="ui main">
         <h2>Edit vehicle</h2>
-        <form className="ui form" onSubmit={this.update}>
+        <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        props.setEditing(false)
+        props.updateVehicle(vehicle.id, vehicle)
+        history('/vehicle')
+      }}>
           <div className="field">
-            <label>vehicleCode</label>
+            <label>Code</label>
             <input
               type="text"
               name="vehicleCode"
-              placeholder="vehicleCode"
-              value={this.state.vehicleCode}
-              onChange={(e) => this.setState({ vehicleCode: e.target.value })}
+              placeholder="Code"
+              value={vehicle.vehicleCode}
+              onChange={handleInputChange}
             />
           </div>
           <div className="field">
-            <label>vehicleDescription</label>
+            <label>Description</label>
             <input
               type="text"
               name="vehicleDescription"
-              placeholder="vehicleDescription"
-              value={this.state.vehicleDescription}
-              onChange={(e) => this.setState({ vehicleDescription: e.target.value })}
+              placeholder="Description"
+              value={vehicle.vehicleDescription}
+              onChange={handleInputChange}
             />
           </div>
           <button className="ui button blue">Update</button>
+          <button className="ui button red">Cancel</button>
         </form>
       </div>
     );
   }
-}
+
 
 export default EditVehicle;

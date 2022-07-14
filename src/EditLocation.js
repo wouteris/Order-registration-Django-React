@@ -1,56 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
 
-class EditLocation extends React.Component {
-  constructor(props) {
-    super(props);
-    const { id, locationCode, locationDescription } = props.location.state.location;
-    this.state = {
-      id,
-      locationCode,
-      locationDescription,
-    };
+function EditLocation(props) {
+
+  //
+  const [location, setLocation] = useState(props.currentLocation)
+  const history = useNavigate();
+
+  //
+  useEffect(() => {
+
+    setLocation(props.currentLocation)
+    
+  } , [ props ]); 
+
+  //
+  const handleInputChange = event => {
+    const { name, value } = event.target
+
+    setLocation({ ...location, [name]: value })
+  
+
   }
-
-  update = (e) => {
-    e.preventDefault();
-    if (this.state.locationCode === "" || this.state.locationDescription === "") {
-      alert("ALl the fields are mandatory!");
-      return;
-    }
-    this.props.updateLocationHandler(this.state);
-    this.setState({ locationCode: "", locationDescription: "" });
-    this.props.history.push("/");
-  };
-  render() {
+   
+  
+  //
     return (
       <div className="ui main">
-        <h2>Edit driver</h2>
-        <form className="ui form" onSubmit={this.update}>
+        <h2>Edit location</h2>
+        <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        props.setEditing(false)
+        props.updateLocation(location.id, location)
+        history('/location')
+      }}>
           <div className="field">
-            <label>locationCode</label>
+            <label>Code</label>
             <input
               type="text"
               name="locationCode"
-              placeholder="locationCode"
-              value={this.state.locationCode}
-              onChange={(e) => this.setState({ locationCode: e.target.value })}
+              placeholder="Code"
+              value={location.locationCode}
+              onChange={handleInputChange}
             />
           </div>
           <div className="field">
-            <label>locationDescription</label>
+            <label>Description</label>
             <input
               type="text"
               name="locationDescription"
-              placeholder="locationDescription"
-              value={this.state.locationDescription}
-              onChange={(e) => this.setState({ locationDescription: e.target.value })}
+              placeholder="Description"
+              value={location.locationDescription}
+              onChange={handleInputChange}
             />
           </div>
           <button className="ui button blue">Update</button>
+          <button className="ui button red">Cancel</button>
         </form>
       </div>
     );
   }
-}
+
 
 export default EditLocation;

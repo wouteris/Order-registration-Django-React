@@ -1,39 +1,65 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+
+
 
 
 function DriverCard (props)  {
 
+
   
   
   return (
-    
-    <div className="item">
-      
-      <div className="content">
-        
-        <Link
-          to={{ pathname: `/driver/${props.driver.id}` } } onClick = {() =>props.editRow(props.driver)}>
-          
-          <div className="header">{props.driver.driverCode}</div>
-          <div>{props.driver.driverDescription}</div>
-          <div>{props.driver.id}</div>
-          
-        </Link>
-      </div>
-      <i
-        className="trash alternate outline icon"
-        style={{ color: "red", marginTop: "7px", marginLeft: "10px" }}
-        onClick={() => props.clickHandler(props.driver.id)} 
-      ></i>
-      <Link to={{ pathname: `/driver/edit` }}>
-        <i
-          className="edit alternate outline icon"
-          style={{ color: "blue", marginTop: "7px" }}
-          onClick = {() =>props.editRow(props.driver)}
-        ></i>
-      </Link>
-    </div>
+    <Link
+    to={{ pathname: `/location/${1}` } } onClick = {() =>props.editRow(props.driver)}>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 500 }} aria-label="simple table">
+            <TableHead>
+                <TableRow>
+                  <TableCell align="left">Code</TableCell>
+                  <TableCell align="left">Drivername</TableCell>
+                  <TableCell align="right">Edit</TableCell>
+                  <TableCell align="right">Delete</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {props.drivers.map((driver) => (
+                <TableRow key={driver.id}>
+                  
+                  <TableCell component="th" scope="row">
+                    {driver.driverCode}</TableCell>
+                  <TableCell align="left">{driver.driverDescription}</TableCell>
+                  <TableCell>      
+                    <Link to={{ pathname: `/driver/edit` }}>
+                    <i
+                      className="edit alternate outline icon"
+                      style={{ color: "blue", marginTop: "7px" }}
+                      onClick = {() =>props.editRow(driver)}
+                    ></i>
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                  <i
+                    className="trash alternate outline icon"
+                    style={{ color: "red", marginTop: "7px", marginLeft: "10px" }}
+                    onClick={() => props.clickHandler(driver.id)} 
+                  ></i>
+                  </TableCell>
+                </TableRow>
+                ))}
+              </TableBody>
+
+            </Table>
+          </TableContainer>
+          </Link>
+   
   );
 };
 

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import api from "./api/products";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Header";
 import ProductList from "./ProductList";
 import AddProduct from "./AddProduct";
 import ProductDetail from "./ProductDetail";
@@ -10,104 +8,145 @@ import EditProduct from "./EditProduct";
 import axios from "axios";
 
 function ProductApp() {
-  const LOCAL_STORAGE_KEY = "products";
+  
+  //Setting state
+  const initialFormState = {id: null, productCode: '', productDescription: ''}
   const [products, setProducts] = useState([]);
+  const [currentProduct, setCurrentProduct] = useState(initialFormState)
+  const [editing, setEditing] = useState(false)
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  //RetrieveProducts
-  const retrieveProducts =  async () => {
+  
+  
+  //API to products table
+  const productsData = async () => {
     const response = await axios.get("api/products");
     return response.data;
   };
+  
+  
+  //CRUD operations
+  const addProduct = async product => {
 
-  const addProductHandler = async (product) => {
-    console.log(product);
-   const request = {
-     ...product
-   };
+    const request = {
+      ...product
+    };
+     console.log("Test",request);
     const response = await axios.post("/api/products/", request);
-    setProducts([...products, response.data]);
-  };
+      console.log(response);
 
-  const updateProductHandler = async (product) => {
-    const response = await axios.put(`/api/products/${product.id}/`, product);
-    const { id, productCode, productDescription } = response.data;
-    setProducts(
-      products.map((product) => {
-        return product.id === id ? { ...response.data } : product;
-      })
-    );
-  };
+    
+		setProducts([ ...products, response.data ])
+	}
+  const updateProduct = async (id, updatedProduct) => {
+    const response = await axios.put(`/api/products/${id}/`, updatedProduct);
+
+		setEditing(false)
+
+    setProducts(products.map(product => (product.id === id ? updatedProduct: product)))
+	}
+ 
+  const editRow = product => {
+    setEditing(true)
+    setCurrentProduct({id: product.id, productCode: product.productCode, productDescription: product.productDescription})
+  }
 
   const removeProductHandler = async (id) => {
     await axios.delete(`/api/products/${id}`);
-    const newProductList = products.filter((product) => {
+    const newproductList = products.filter((product) => {
       return product.id !== id;
     });
 
-    setProducts(newProductList);
+    setProducts(newproductList);
   };
 
   const searchHandler = (searchTerm) => {
     setSearchTerm(searchTerm);
     if (searchTerm !== "") {
-      const newProductList = products.filter((product) => {
+      const newproductList = products.filter((product) => {
         return Object.values(product)
           .join(" ")
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       });
-      setSearchResults(newProductList);
+      setSearchResults(newproductList);
     } else {
       setSearchResults(products);
     }
   };
 
   useEffect(() => {
-    const getAllProducts = async () => {
-      const allProducts = await retrieveProducts();
-      if (allProducts) setProducts(allProducts);
+    const getAllproducts = async () => {
+      const allproducts = await productsData();
+      if (allproducts) setProducts(allproducts);
     };
 
-    getAllProducts();
+    getAllproducts();
   }, []);
+
+
 
   return (
     <div>
     <div className="ui container">
       
      
-        
+      
         <Routes>
           <Route
             path="/"
+            exact
             element={<ProductList
-               
+                
+                
                 products={searchTerm.length < 1 ? products : searchResults}
-                getProductId={removeProductHandler}
+                getproductId={removeProductHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
+                editing={editing}
+								setEditing={setEditing}
+								currentProduct={currentProduct}
+								updateProduct={updateProduct}
+                editRow={editRow}
+                productsData={productsData}
+                
+                
+                
               />
             }
           />
           <Route
             path="add"
-            element={<AddProduct  addProductHandler={addProductHandler} />
+            element={<AddProduct  
+              addProduct={addProduct}
+              />
             }
           />
 
           <Route
             path="edit"
             element={<EditProduct
-              
-                updateProductHandler={updateProductHandler}
+                state={{products}}
+                
+                editing={editing}
+								setEditing={setEditing}
+								currentProduct={currentProduct}
+								updateProduct={updateProduct}
+                
+                
               />
             }
           />
 
-          <Route path="/product/:id" component={ProductDetail} />
+          <Route path=":id" element={<ProductDetail
+                currentProduct={currentProduct}
+                products={products}
+                
+          /> }
+          />
         </Routes>
-     
+      
     </div>
     </div>
     );

@@ -24,7 +24,10 @@ const App = () => (
   <Header />
   <Routes>
     <Route path = "/"  element={<Home />} />
-    <Route path="/Location/*" element={<LocationApp />}/>
+    <Route 
+      path="/Location/*" 
+      
+      element={<LocationApp />}/>
       
     
     <Route

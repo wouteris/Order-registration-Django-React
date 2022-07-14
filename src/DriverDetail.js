@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import user from "./images/user.jpg";
-import { DataGrid } from '@mui/x-data-grid';
 
 
 function DriverDetail  (props) {
@@ -9,8 +8,6 @@ function DriverDetail  (props) {
   const history = useNavigate();
  
   
-
-
   useEffect(() => {
 
   setDriver(props.currentDriver)
@@ -19,7 +16,6 @@ function DriverDetail  (props) {
 
 
  
-
   return (
     <div className="main">
       <div className="ui card centered">

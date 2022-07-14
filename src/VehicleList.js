@@ -2,24 +2,28 @@ import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import VehicleCard from "./VehicleCard";
 
-const VehicleList = (props) => {
+function VehicleList  (props) {
   const inputEl = useRef("");
-  const deleteVehicleHandler = (id) => {
-    props.getVehicleId(id);
+
+  const deletevehicleHandler = (id) => {
+    props.getvehicleId(id);
   };
 
- 
   const renderVehicleList = props.vehicles.map((vehicle) => {
     return (
       <VehicleCard
         vehicle={vehicle}
-        clickHandler={deleteVehicleHandler}
+        clickHandler={deletevehicleHandler}
         key={vehicle.id}
+        editRow={props.editRow}
+        currentUser={props.currentUser}
+        editing={props.editing}
+        setEditing={props.setEditing}
+        
       />
     );
   });
  
-
 
   const getSearchTerm = () => {
     props.searchKeyword(inputEl.current.value);
@@ -27,9 +31,9 @@ const VehicleList = (props) => {
   return (
     <div className="main">
       <h2>
-        Vehicle List
+        vehicle List
         <Link to="add">
-          <button className="ui button blue right">Add Vehicle</button>
+          <button className="ui button blue right">Add vehicle</button>
         </Link>
       </h2>
       <div className="ui search">
@@ -37,7 +41,7 @@ const VehicleList = (props) => {
           <input
             ref={inputEl}
             type="text"
-            placeholder="Search Vehicles"
+            placeholder="Search Locations"
             className="prompt"
             value={props.term}
             onChange={getSearchTerm}

@@ -1,56 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-class AddProduct extends React.Component {
-  state = {
-    productCode: "",
-    productDescription: "",
-  };
 
-  add = (e) => {
-    e.preventDefault();
-    if (this.state.productCode === "" || this.state.productDescription === "") {
-      alert("All the fields are mandatory!");
-      return;
-    }
-  
-    this.props.addProductHandler(this.state);
+function AddProduct(props) {
+  const initialFormState = { id: null, productCode: '', productDescription: ''}
+  const [ product, setProduct ] = useState(initialFormState)
+ 
+  const handleInputChange = event => {
+		const { name, value } = event.target
+		setProduct({ ...product, [name]: value })
     
-    this.setState({ productCode: "", productDescription: "" });
-    this.props.history.push("/");
-    
-  };
-
-
-  render() {
-    return (
-      <div className="ui main">
-        <h2>Add Product</h2>
-        <form className="ui form" onSubmit={this.add}>
-          <div className="field">
-            <label>productCode</label>
-            <input
-              type="text"
-              name="productCode"
-              placeholder="productCode"
-              value={this.state.productCode}
-              onChange={(e) => this.setState({ productCode: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label>productDescription</label>
-            <input
-              type="text"
-              name="productDescription"
-              placeholder="productDescription"
-              value={this.state.productDescription}
-              onChange={(e) => this.setState({ productDescription: e.target.value })}
-            />
-          </div>
-          <button className="ui button blue">Add</button>
-        </form>
-      </div>
-    );
   }
+ 
+  const history = useNavigate();
+  
+  
+
+
+  return (
+    <div className="ui main">
+      <h2>Add product</h2>
+      <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        if (!product.productCode || !product.productDescription) return
+
+        
+        
+        props.addProduct(product)
+        setProduct(initialFormState)
+        history('/product')
+
+      }} >
+        <div className="field">
+          <label>Code</label>
+          <input
+            type="text"
+            name="productCode"
+            placeholder="Code"
+            value={product.productCode}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="field">
+          <label>Description</label>
+          <input
+            type="text"
+            name="productDescription"
+            placeholder="Description"
+            value={product.productDescription}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button className="ui button blue">Add</button>
+        <button  className="ui button red">Cancel</button>
+      </form>
+    </div>
+  );
 }
 
-export default AddProduct;
+
+export default AddProduct

@@ -1,9 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import user from "./images/user.jpg";
 
-const ProductDetail = (props) => {
-  const { productCode, productDescription } = props.location.state.product;
+
+function ProductDetail  (props) {
+  const [product, setProduct] = useState(props.currentProduct)
+  const history = useNavigate();
+ 
+  
+  useEffect(() => {
+
+  setProduct(props.currentProduct)
+  
+  } , [ props ]); 
+
+
+ 
   return (
     <div className="main">
       <div className="ui card centered">
@@ -11,16 +23,17 @@ const ProductDetail = (props) => {
       <img src={user} alt="user" />
         </div>
         <div className="content">
-          <div className="header">{productCode}</div>
-          <div className="description">{productDescription}</div>
+          <div className="header">productname:  {product.productDescription}</div>
+          <div className="description">productcode: {product.productCode} </div>
         </div>
       </div>
       <div className="center-div">
-        <Link to="/">
-          <button className="ui button blue center">
-            Back to Product List
+        
+          <button onClick = {() =>history('/product')} className="ui button blue center">
+            Back to product List
+            
           </button>
-        </Link>
+        
       </div>
     </div>
   );

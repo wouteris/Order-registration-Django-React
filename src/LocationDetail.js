@@ -1,9 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import user from "./images/user.jpg";
 
-const LocationDetail = (props) => {
-  const { locationCode, locationDescription } = props.location.state.location;
+
+function LocationDetail  (props) {
+  const [location, setLocation] = useState(props.currentLocation)
+  const history = useNavigate();
+ 
+  
+  useEffect(() => {
+
+  setLocation(props.currentLocation)
+  
+  } , [ props ]); 
+
+
+ 
   return (
     <div className="main">
       <div className="ui card centered">
@@ -11,16 +23,17 @@ const LocationDetail = (props) => {
       <img src={user} alt="user" />
         </div>
         <div className="content">
-          <div className="header">{locationCode}</div>
-          <div className="description">{locationDescription}</div>
+          <div className="header">locationname:  {location.locationDescription}</div>
+          <div className="description">locationcode: {location.locationCode} </div>
         </div>
       </div>
       <div className="center-div">
-        <Link to="/">
-          <button className="ui button blue center">
+        
+          <button onClick = {() =>history('/location')} className="ui button blue center">
             Back to Location List
+            
           </button>
-        </Link>
+        
       </div>
     </div>
   );

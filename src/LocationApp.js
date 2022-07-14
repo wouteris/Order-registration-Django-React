@@ -1,89 +1,91 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useRouteMatch, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Header";
 import LocationList from "./LocationList";
 import AddLocation from "./AddLocation";
 import LocationDetail from "./LocationDetail";
 import EditLocation from "./EditLocation";
-import ProductApp from "./ProductApp";
 import axios from "axios";
 
 function LocationApp() {
-  const [locations, setLocations] = useState([]);
+  
+  //Setting state
+  const initialFormState = {id: null, locationCode: '', locationDescription: ''}
+  const [locations, setlocations] = useState([]);
+  const [currentLocation, setCurrentlocation] = useState(initialFormState)
+  const [editing, setEditing] = useState(false)
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   
   
-  
-  
-  //RetrieveLocations
-  const retrieveLocations =  async () => {
+  //API to locations table
+  const locationsData = async () => {
     const response = await axios.get("api/locations");
     return response.data;
   };
-
-  const addLocationHandler = async (location) => {
-    console.log(location);
-
   
-   const request = {
-     ...location
-   };
-    console.log("Test",request);
+  
+  //CRUD operations
+  const addLocation = async location => {
+
+    const request = {
+      ...location
+    };
+     console.log("Test",request);
     const response = await axios.post("/api/locations/", request);
-    console.log(response);
-    setLocations([...locations, response.data]);
+      console.log(response);
 
     
-   
-    
-  };
+		setlocations([ ...locations, response.data ])
+	}
+  const updateLocation = async (id, updatedlocation) => {
+    const response = await axios.put(`/api/locations/${id}/`, updatedlocation);
 
-  const updateLocationHandler = async (location) => {
-    const response = await axios.put(`/api/locations/${location.id}/`, location);
-    const { id, locationCode, locationDescription } = response.data;
-    setLocations(
-      locations.map((location) => {
-        return location.id === id ? { ...response.data } : location;
-      })
-    );
-  };
+		setEditing(false)
 
-  const removeLocationHandler = async (id) => {
+    setlocations(locations.map(location => (location.id === id ? updatedlocation: location)))
+	}
+ 
+  const editRow = location => {
+    setEditing(true)
+    setCurrentlocation({id: location.id, locationCode: location.locationCode, locationDescription: location.locationDescription})
+  }
+
+  const removelocationHandler = async (id) => {
     await axios.delete(`/api/locations/${id}`);
-    const newLocationList = locations.filter((location) => {
+    const newlocationList = locations.filter((location) => {
       return location.id !== id;
     });
 
-    setLocations(newLocationList);
+    setlocations(newlocationList);
   };
 
   const searchHandler = (searchTerm) => {
     setSearchTerm(searchTerm);
     if (searchTerm !== "") {
-      const newLocationList = locations.filter((location) => {
+      const newlocationList = locations.filter((location) => {
         return Object.values(location)
           .join(" ")
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       });
-      setSearchResults(newLocationList);
+      setSearchResults(newlocationList);
     } else {
       setSearchResults(locations);
     }
   };
 
   useEffect(() => {
-    const getAllLocations = async () => {
-      const allLocations = await retrieveLocations();
-      if (allLocations) setLocations(allLocations);
+    const getAlllocations = async () => {
+      const alllocations = await locationsData();
+      if (alllocations) setlocations(alllocations);
     };
 
-    getAllLocations();
+    getAlllocations();
   }, []);
 
- 
+
 
   return (
     <div>
@@ -94,20 +96,30 @@ function LocationApp() {
         <Routes>
           <Route
             path="/"
-            
+            exact
             element={<LocationList
                 
+                
                 locations={searchTerm.length < 1 ? locations : searchResults}
-                getLocationId={removeLocationHandler}
+                getlocationId={removelocationHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
+                editing={editing}
+								setEditing={setEditing}
+								currentLocation={currentLocation}
+								updateLocation={updateLocation}
+                editRow={editRow}
+                locationsData={locationsData}
+                
+                
+                
               />
             }
           />
-            <Route
+          <Route
             path="add"
-            element={<AddLocation
-                addLocationHandler={addLocationHandler}
+            element={<AddLocation  
+              addLocation={addLocation}
               />
             }
           />
@@ -115,17 +127,28 @@ function LocationApp() {
           <Route
             path="edit"
             element={<EditLocation
-                updateLocationHandler={updateLocationHandler}
+                state={{locations}}
+                
+                editing={editing}
+								setEditing={setEditing}
+								currentLocation={currentLocation}
+								updateLocation={updateLocation}
+                
+                
               />
             }
           />
 
-          <Route path="/location/:id" element={LocationDetail} />
+          <Route path=":id" element={<LocationDetail
+                currentLocation={currentLocation}
+                locations={locations}
+                
+          /> }
+          />
         </Routes>
-    
+      
     </div>
     </div>
-    
     );
 }
 

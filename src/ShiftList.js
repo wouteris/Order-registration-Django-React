@@ -2,24 +2,28 @@ import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import ShiftCard from "./ShiftCard";
 
-const ShiftList = (props) => {
+function ShiftList  (props) {
   const inputEl = useRef("");
+
   const deleteShiftHandler = (id) => {
     props.getShiftId(id);
   };
 
- 
   const renderShiftList = props.shifts.map((shift) => {
     return (
       <ShiftCard
         shift={shift}
         clickHandler={deleteShiftHandler}
         key={shift.id}
+        editRow={props.editRow}
+        currentUser={props.currentUser}
+        editing={props.editing}
+        setEditing={props.setEditing}
+        
       />
     );
   });
  
-
 
   const getSearchTerm = () => {
     props.searchKeyword(inputEl.current.value);
@@ -27,9 +31,9 @@ const ShiftList = (props) => {
   return (
     <div className="main">
       <h2>
-        Shift List
+        shift List
         <Link to="add">
-          <button className="ui button blue right">Add Shift</button>
+          <button className="ui button blue right">Add shift</button>
         </Link>
       </h2>
       <div className="ui search">
@@ -37,7 +41,7 @@ const ShiftList = (props) => {
           <input
             ref={inputEl}
             type="text"
-            placeholder="Search Shifts"
+            placeholder="Search Locations"
             className="prompt"
             value={props.term}
             onChange={getSearchTerm}

@@ -1,56 +1,66 @@
-import React from "react";
+import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
 
-class EditShift extends React.Component {
-  constructor(props) {
-    super(props);
-    const { id, shiftCode, shiftDescription } = props.location.state.shift;
-    this.state = {
-      id,
-      shiftCode,
-      shiftDescription,
-    };
+
+function EditShift(props) {
+
+  //
+  const [shift, setShift] = useState(props.currentShift)
+  const history = useNavigate();
+
+  //
+  useEffect(() => {
+
+    setShift(props.currentShift)
+    
+  } , [ props ]); 
+
+  //
+  const handleInputChange = event => {
+    const { name, value } = event.target
+
+    setShift({ ...shift, [name]: value })
+  
+
   }
-
-  update = (e) => {
-    e.preventDefault();
-    if (this.state.shiftCode === "" || this.state.shiftDescription === "") {
-      alert("ALl the fields are mandatory!");
-      return;
-    }
-    this.props.updateShiftHandler(this.state);
-    this.setState({ shiftCode: "", shiftDescription: "" });
-    this.props.history.push("/");
-  };
-  render() {
+   
+  
+  //
     return (
       <div className="ui main">
-        <h2>Edit Shift</h2>
-        <form className="ui form" onSubmit={this.update}>
+        <h2>Edit shift</h2>
+        <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        props.setEditing(false)
+        props.updateShift(shift.id, shift)
+        history('/shift')
+      }}>
           <div className="field">
-            <label>shiftCode</label>
+            <label>Code</label>
             <input
               type="text"
               name="shiftCode"
-              placeholder="shiftCode"
-              value={this.state.shiftCode}
-              onChange={(e) => this.setState({ shiftCode: e.target.value })}
+              placeholder="Code"
+              value={shift.shiftCode}
+              onChange={handleInputChange}
             />
           </div>
           <div className="field">
-            <label>shiftDescription</label>
+            <label>Description</label>
             <input
               type="text"
               name="shiftDescription"
-              placeholder="shiftDescription"
-              value={this.state.shiftDescription}
-              onChange={(e) => this.setState({ shiftDescription: e.target.value })}
+              placeholder="Description"
+              value={shift.shiftDescription}
+              onChange={handleInputChange}
             />
           </div>
           <button className="ui button blue">Update</button>
+          <button className="ui button red">Cancel</button>
         </form>
       </div>
     );
   }
-}
+
 
 export default EditShift;

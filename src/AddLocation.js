@@ -1,66 +1,64 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import LocationApp from "./LocationApp";
+import axios from "axios";
 
-
-class AddLocation extends React.Component {
-  
-  state = {
-    locationCode: "",
-    locationDescription: "",
-  };
-
+function AddLocation(props) {
+  const initialFormState = { id: null, locationCode: '', locationDescription: ''}
+  const [ location, setLocation ] = useState(initialFormState)
  
-
-
-  add = (e) => {
-    e.preventDefault();
-    if (this.state.locationCode === "" || this.state.locationDescription === "") {
-      alert("All the fields are mandatory!");
-      return;
-    }
-  
-    this.props.addLocationHandler(this.state);
+  const handleInputChange = event => {
+		const { name, value } = event.target
+		setLocation({ ...location, [name]: value })
     
-    this.setState({ locationCode: "", locationDescription: "" });
-    //this.props.history.push("/");
-    console.log("Test")
-  
-    
-
-    
-  };
-
-
-  render() {
-    return (
-      <div className="ui main">
-        <h2>Add Location</h2>
-        <form className="ui form" onSubmit={this.add}>
-          <div className="field">
-            <label>locationCode</label>
-            <input
-              type="text"
-              name="locationCode"
-              placeholder="locationCode"
-              value={this.state.locationCode}
-              onChange={(e) => this.setState({ locationCode: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label>locationDescription</label>
-            <input
-              type="text"
-              name="locationDescription"
-              placeholder="locationDescription"
-              value={this.state.locationDescription}
-              onChange={(e) => this.setState({ locationDescription: e.target.value })}
-            />
-          </div>
-          <button className="ui button blue">Add</button>
-        </form>
-      </div>
-    );
   }
+ 
+  const history = useNavigate();
+  
+  
+
+
+  return (
+    <div className="ui main">
+      <h2>Add location</h2>
+      <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        if (!location.locationCode || !location.locationDescription) return
+
+        
+        
+        props.addLocation(location)
+        setLocation(initialFormState)
+        history('/Location')
+
+      }} >
+        <div className="field">
+          <label>Code</label>
+          <input
+            type="text"
+            name="locationCode"
+            placeholder="Code"
+            value={location.locationCode}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="field">
+          <label>Description</label>
+          <input
+            type="text"
+            name="locationDescription"
+            placeholder="Description"
+            value={location.locationDescription}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button className="ui button blue">Add</button>
+        <button  className="ui button red">Cancel</button>
+      </form>
+    </div>
+  );
 }
 
-export default AddLocation;
+
+export default AddLocation

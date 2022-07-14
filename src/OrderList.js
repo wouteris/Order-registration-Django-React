@@ -2,24 +2,28 @@ import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import OrderCard from "./OrderCard";
 
-const OrderList = (props) => {
+function OrderList  (props) {
   const inputEl = useRef("");
+
   const deleteOrderHandler = (id) => {
     props.getOrderId(id);
   };
 
- 
   const renderOrderList = props.orders.map((order) => {
     return (
       <OrderCard
         order={order}
         clickHandler={deleteOrderHandler}
         key={order.id}
+        editRow={props.editRow}
+        currentUser={props.currentUser}
+        editing={props.editing}
+        setEditing={props.setEditing}
+        
       />
     );
   });
  
-
 
   const getSearchTerm = () => {
     props.searchKeyword(inputEl.current.value);
@@ -27,9 +31,9 @@ const OrderList = (props) => {
   return (
     <div className="main">
       <h2>
-        Order List
+        order List
         <Link to="add">
-          <button className="ui button blue right">Add Order</button>
+          <button className="ui button blue right">Add order</button>
         </Link>
       </h2>
       <div className="ui search">
@@ -37,7 +41,7 @@ const OrderList = (props) => {
           <input
             ref={inputEl}
             type="text"
-            placeholder="Search Orders"
+            placeholder="Search Locations"
             className="prompt"
             value={props.term}
             onChange={getSearchTerm}

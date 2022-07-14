@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import DriverApp from "./DriverApp";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 function AddDriver(props) {
   const initialFormState = { id: null, driverCode: '', driverDescription: ''}

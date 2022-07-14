@@ -1,25 +1,29 @@
 import React, { useRef } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import LocationCard from "./LocationCard";
 
-const LocationList = (props) => {
+function LocationList  (props) {
   const inputEl = useRef("");
+
   const deleteLocationHandler = (id) => {
-    props.getLocationId(id);
+    props.getlocationId(id);
   };
 
- 
   const renderLocationList = props.locations.map((location) => {
     return (
       <LocationCard
         location={location}
         clickHandler={deleteLocationHandler}
         key={location.id}
+        editRow={props.editRow}
+        currentUser={props.currentUser}
+        editing={props.editing}
+        setEditing={props.setEditing}
+        
       />
     );
   });
  
-
 
   const getSearchTerm = () => {
     props.searchKeyword(inputEl.current.value);
@@ -29,9 +33,8 @@ const LocationList = (props) => {
       <h2>
         Location List
         <Link to="add">
-          <button className="ui button blue right">Add Location</button>
+          <button className="ui button blue right">Add location</button>
         </Link>
-        <Outlet />
       </h2>
       <div className="ui search">
         <div className="ui icon input">
@@ -49,7 +52,7 @@ const LocationList = (props) => {
       <div className="ui celled list">
       {renderLocationList.length > 0
           ? renderLocationList
-          : "No locations available"}
+          : "No products available"}
       </div>
     </div>
   );

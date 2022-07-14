@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import api from "./api/products";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Header";
 import ShiftList from "./ShiftList";
 import AddShift from "./AddShift";
 import ShiftDetail from "./ShiftDetail";
@@ -10,131 +8,143 @@ import EditShift from "./EditShift";
 import axios from "axios";
 
 function ShiftApp() {
-  const LOCAL_STORAGE_KEY = "shifts";
+  
+  //Setting state
+  const initialFormState = {id: null, shiftCode: '', shiftDescription: ''}
   const [shifts, setShifts] = useState([]);
+  const [currentShift, setCurrentShift] = useState(initialFormState)
+  const [editing, setEditing] = useState(false)
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  //RetrieveProducts
-  const retrieveShifts =  async () => {
+  
+  
+  //API to shifts table
+  const shiftsData = async () => {
     const response = await axios.get("api/shifts");
     return response.data;
   };
-
-  const addShiftHandler = async (shift) => {
-    console.log(shift);
-
-    //console.log(uuid());
-   const request = {
-   //   id: uuid(),
-   //...product,
-     //id: 2,
-     ...shift,
-     //productCode: this.state.productCode,
-    //productDescription:"NU"
-   };
-    console.log(request);
-    const response = await axios.post("/api/shifts/", request);
-    console.log(response);
-    setShifts([...shifts, response.data]);
-
-    
-   
-    
-  };
-
-  const addShifts = {
-    id: 2,
-    shiftCode: "NU",
-    shiftDescription: "NU",
-  }
-  api.post('api/shifts', addShifts)
-  .then(res => console.log(res.data));
   
+  
+  //CRUD operations
+  const addShift = async shift => {
 
-  const updateShiftHandler = async (shift) => {
-    const response = await axios.put(`/api/shifts/${shift.id}/`, shift);
-    const { id, shiftCode, shiftDescription } = response.data;
-    setShifts(
-      shifts.map((shift) => {
-        return shift.id === id ? { ...response.data } : shift;
-      })
-    );
-  };
+    const request = {
+      ...shift
+    };
+     console.log("Test",request);
+    const response = await axios.post("/api/shifts/", request);
+      console.log(response);
+
+    
+		setShifts([ ...shifts, response.data ])
+	}
+  const updateShift = async (id, updatedshift) => {
+    const response = await axios.put(`/api/shifts/${id}/`, updatedshift);
+
+		setEditing(false)
+
+    setShifts(shifts.map(shift => (shift.id === id ? updatedshift: shift)))
+	}
+ 
+  const editRow = shift => {
+    setEditing(true)
+    setCurrentShift({id: shift.id, shiftCode: shift.shiftCode, shiftDescription: shift.shiftDescription})
+  }
 
   const removeShiftHandler = async (id) => {
     await axios.delete(`/api/shifts/${id}`);
-    const newShiftList = shifts.filter((shift) => {
+    const newshiftList = shifts.filter((shift) => {
       return shift.id !== id;
     });
 
-    setShifts(newShiftList);
+    setShifts(newshiftList);
   };
 
   const searchHandler = (searchTerm) => {
     setSearchTerm(searchTerm);
     if (searchTerm !== "") {
-      const newShiftList = shifts.filter((shift) => {
+      const newshiftList = shifts.filter((shift) => {
         return Object.values(shift)
           .join(" ")
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       });
-      setSearchResults(newShiftList);
+      setSearchResults(newshiftList);
     } else {
       setSearchResults(shifts);
     }
   };
 
   useEffect(() => {
-    // const retriveProducts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    // if (retriveProducts) setProducts(retriveProducts);
-    const getAllShifts = async () => {
-      const allShifts = await retrieveShifts();
-      if (allShifts) setShifts(allShifts);
+    const getAllshifts = async () => {
+      const allshifts = await shiftsData();
+      if (allshifts) setShifts(allshifts);
     };
 
-    getAllShifts();
+    getAllshifts();
   }, []);
 
-  //useEffect(() => {
-  //  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
-  //}, [products]);
+
 
   return (
     <div>
     <div className="ui container">
       
+     
       
-       
         <Routes>
           <Route
             path="/"
             exact
             element={<ShiftList
                 
+                
                 shifts={searchTerm.length < 1 ? shifts : searchResults}
                 getShiftId={removeShiftHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
+                editing={editing}
+								setEditing={setEditing}
+								currentShift={currentShift}
+								updateShift={updateShift}
+                editRow={editRow}
+                shiftsData={shiftsData}
+                
+                
+                
               />
             }
           />
           <Route
             path="add"
-            element={<AddShift  addShiftHandler={addShiftHandler} />
-            }
-          />
-
-          <Route
-            path="/edit"
-            element={<EditShift
-               
-                updateShiftHandler={updateShiftHandler}
+            element={<AddShift  
+              addShift={addShift}
               />
             }
           />
 
-          <Route path="/shift/:id" component={ShiftDetail} />
+          <Route
+            path="edit"
+            element={<EditShift
+                state={{shifts}}
+                
+                editing={editing}
+								setEditing={setEditing}
+								currentShift={currentShift}
+								updateShift={updateShift}
+                
+                
+              />
+            }
+          />
+
+          <Route path=":id" element={<ShiftDetail
+                currentShift={currentShift}
+                shifts={shifts}
+                
+          /> }
+          />
         </Routes>
       
     </div>

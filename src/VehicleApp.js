@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Header";
 import VehicleList from "./VehicleList";
 import AddVehicle from "./AddVehicle";
 import VehicleDetail from "./VehicleDetail";
@@ -10,96 +8,90 @@ import EditVehicle from "./EditVehicle";
 import axios from "axios";
 
 function VehicleApp() {
-  const LOCAL_STORAGE_KEY = "Vehicles";
+  
+  //Setting state
+  const initialFormState = {id: null, vehicleCode: '', vehicleDescription: ''}
   const [vehicles, setVehicles] = useState([]);
+  const [currentVehicle, setCurrentVehicle] = useState(initialFormState)
+  const [editing, setEditing] = useState(false)
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  //RetrieveVehicles
-  const retrieveVehicles =  async () => {
+  
+  
+  //API to vehicles table
+  const vehiclesData = async () => {
     const response = await axios.get("api/vehicles");
     return response.data;
   };
+  
+  
+  //CRUD operations
+  const addVehicle = async vehicle => {
 
-  const addVehicleHandler = async (vehicle) => {
-    console.log(vehicle);
-
-    //console.log(uuid());
-   const request = {
-   //   id: uuid(),
-   //...Vehicle,
-     //id: 2,
-     ...vehicle,
-     //VehicleCode: this.state.VehicleCode,
-    //VehicleDescription:"NU"
-   };
-    console.log(request);
+    const request = {
+      ...vehicle
+    };
+     console.log("Test",request);
     const response = await axios.post("/api/vehicles/", request);
-    console.log(response);
-    setVehicles([...vehicles, response.data]);
+      console.log(response);
 
     
-   
-    
-  };
+		setVehicles([ ...vehicles, response.data ])
+	}
+  const updateVehicle = async (id, updatedVehicle) => {
+    const response = await axios.put(`/api/vehicles/${id}/`, updatedVehicle);
 
-  
-  
-  
+		setEditing(false)
 
-  const updateVehicleHandler = async (vehicle) => {
-    const response = await axios.put(`/api/vehicles/${vehicle.id}/`, vehicle);
-    const { id, vehicleCode, vehicleDescription } = response.data;
-    setVehicles(
-      vehicles.map((vehicle) => {
-        return vehicle.id === id ? { ...response.data } : vehicle;
-      })
-    );
-  };
+    setVehicles(vehicles.map(vehicle => (vehicle.id === id ? updatedVehicle: vehicle)))
+	}
+ 
+  const editRow = vehicle => {
+    setEditing(true)
+    setCurrentVehicle({id: vehicle.id, vehicleCode: vehicle.vehicleCode, vehicleDescription: vehicle.vehicleDescription})
+  }
 
   const removeVehicleHandler = async (id) => {
     await axios.delete(`/api/vehicles/${id}`);
-    const newVehicleList = vehicles.filter((vehicle) => {
+    const newvehicleList = vehicles.filter((vehicle) => {
       return vehicle.id !== id;
     });
 
-    setVehicles(newVehicleList);
+    setVehicles(newvehicleList);
   };
 
   const searchHandler = (searchTerm) => {
     setSearchTerm(searchTerm);
     if (searchTerm !== "") {
-      const newVehicleList = vehicles.filter((vehicle) => {
+      const newvehicleList = vehicles.filter((vehicle) => {
         return Object.values(vehicle)
           .join(" ")
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       });
-      setSearchResults(newVehicleList);
+      setSearchResults(newvehicleList);
     } else {
       setSearchResults(vehicles);
     }
   };
 
   useEffect(() => {
-    // const retriveVehicles = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    // if (retriveVehicles) setVehicles(retriveVehicles);
-    const getAllVehicles = async () => {
-      const allVehicles = await retrieveVehicles();
-      if (allVehicles) setVehicles(allVehicles);
+    const getAllvehicles = async () => {
+      const allvehicles = await vehiclesData();
+      if (allvehicles) setVehicles(allvehicles);
     };
 
-    getAllVehicles();
+    getAllvehicles();
   }, []);
 
-  //useEffect(() => {
-  //  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(Vehicles));
-  //}, [Vehicles]);
+
 
   return (
     <div>
     <div className="ui container">
       
-      
+     
       
         <Routes>
           <Route
@@ -107,29 +99,52 @@ function VehicleApp() {
             exact
             element={<VehicleList
                 
+                
                 vehicles={searchTerm.length < 1 ? vehicles : searchResults}
                 getVehicleId={removeVehicleHandler}
                 term={searchTerm}
                 searchKeyword={searchHandler}
+                editing={editing}
+								setEditing={setEditing}
+								currentVehicle={currentVehicle}
+								updateVehicle={updateVehicle}
+                editRow={editRow}
+                vehiclesData={vehiclesData}
+                
+                
+                
               />
             }
           />
           <Route
             path="add"
-            element={<AddVehicle addVehicleHandler={addVehicleHandler} />
+            element={<AddVehicle  
+              addVehicle={addVehicle}
+              />
             }
           />
 
           <Route
             path="edit"
-            element={<EditVehicle 
+            element={<EditVehicle
+                state={{vehicles}}
                 
-                updateVehicleHandler={updateVehicleHandler}
+                editing={editing}
+								setEditing={setEditing}
+								currentVehicle={currentVehicle}
+								updateVehicle={updateVehicle}
+                
+                
               />
             }
           />
 
-          <Route path="/vehicle/:id" component={VehicleDetail} />
+          <Route path=":id" element={<VehicleDetail
+                currentVehicle={currentVehicle}
+                vehicles={vehicles}
+                
+          /> }
+          />
         </Routes>
       
     </div>

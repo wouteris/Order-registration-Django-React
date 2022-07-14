@@ -4,18 +4,13 @@ import "./App.css";
 import DriverList from "./DriverList";
 import AddDriver from "./AddDriver";
 import DriverDetail from "./DriverDetail";
-import Component1 from "./Component1";
 import EditDriver from "./EditDriver";
 import axios from "axios";
 
 function DriverApp() {
   
-
-
-  const initialFormState = {id: null, driverCode: '', driverDescription: ''}
-
-
   //Setting state
+  const initialFormState = {id: null, driverCode: '', driverDescription: ''}
   const [drivers, setDrivers] = useState([]);
   const [currentDriver, setCurrentDriver] = useState(initialFormState)
   const [editing, setEditing] = useState(false)
@@ -24,14 +19,12 @@ function DriverApp() {
   const [searchResults, setSearchResults] = useState([]);
   
   
+  //API to drivers table
   const driversData = async () => {
     const response = await axios.get("api/drivers");
     return response.data;
   };
   
-  
-  const result = (drivers) => Math.max(...drivers.map(val => val.id));
-  console.log(result(drivers));
   
   //CRUD operations
   const addDriver = async driver => {
@@ -58,8 +51,6 @@ function DriverApp() {
     setEditing(true)
     setCurrentDriver({id: driver.id, driverCode: driver.driverCode, driverDescription: driver.driverDescription})
   }
-
-  
 
   const removeDriverHandler = async (id) => {
     await axios.delete(`/api/drivers/${id}`);

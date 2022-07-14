@@ -1,56 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-class AddVehicle extends React.Component {
-  state = {
-    vehicleCode: "",
-    vehicleDescription: "",
-  };
 
-  add = (e) => {
-    e.preventDefault();
-    if (this.state.vehicleCode === "" || this.state.vehicleDescription === "") {
-      alert("All the fields are mandatory!");
-      return;
-    }
-  
-    this.props.addVehicleHandler(this.state);
+function AddVehicle(props) {
+  const initialFormState = { id: null, vehicleCode: '', vehicleDescription: ''}
+  const [ vehicle, setVehicle ] = useState(initialFormState)
+ 
+  const handleInputChange = event => {
+		const { name, value } = event.target
+		setVehicle({ ...vehicle, [name]: value })
     
-    this.setState({ vehicleCode: "", vehicleDescription: "" });
-    this.props.history.push("/");
-    
-  };
-
-
-  render() {
-    return (
-      <div className="ui main">
-        <h2>Add vehicle</h2>
-        <form className="ui form" onSubmit={this.add}>
-          <div className="field">
-            <label>vehicleCode</label>
-            <input
-              type="text"
-              name="vehicleCode"
-              placeholder="vehicleCode"
-              value={this.state.vehicleCode}
-              onChange={(e) => this.setState({ vehicleCode: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label>vehicleDescription</label>
-            <input
-              type="text"
-              name="vehicleDescription"
-              placeholder="vehicleDescription"
-              value={this.state.vehicleDescription}
-              onChange={(e) => this.setState({ vehicleDescription: e.target.value })}
-            />
-          </div>
-          <button className="ui button blue">Add</button>
-        </form>
-      </div>
-    );
   }
+ 
+  const history = useNavigate();
+  
+  
+
+
+  return (
+    <div className="ui main">
+      <h2>Add vehicle</h2>
+      <form className="ui form" onSubmit={event => {
+        event.preventDefault()
+        if (!vehicle.vehicleCode || !vehicle.vehicleDescription) return
+
+        
+        
+        props.addVehicle(vehicle)
+        setVehicle(initialFormState)
+        history('/vehicle')
+
+      }} >
+        <div className="field">
+          <label>Code</label>
+          <input
+            type="text"
+            name="vehicleCode"
+            placeholder="Code"
+            value={vehicle.vehicleCode}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="field">
+          <label>Description</label>
+          <input
+            type="text"
+            name="vehicleDescription"
+            placeholder="Description"
+            value={vehicle.vehicleDescription}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button className="ui button blue">Add</button>
+        <button  className="ui button red">Cancel</button>
+      </form>
+    </div>
+  );
 }
 
-export default AddVehicle;
+
+export default AddVehicle
