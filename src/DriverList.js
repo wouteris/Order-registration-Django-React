@@ -44,7 +44,7 @@ function DriverList  (props) {
           <input
             ref={inputEl}
             type="text"
-            placeholder="Search Locations"
+            placeholder="Search Drivers"
             className="prompt"
             value={props.term}
             onChange={getSearchTerm}

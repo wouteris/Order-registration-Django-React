@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState }  from "react";
 import { Link } from "react-router-dom";
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
@@ -12,13 +12,12 @@ import TableCell from '@mui/material/TableCell';
 
 
 function DriverCard (props)  {
-
+ 
 
   
   
   return (
-    <Link
-    to={{ pathname: `/location/${1}` } } onClick = {() =>props.editRow(props.driver)}>
+   
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 500 }} aria-label="simple table">
             <TableHead>
@@ -58,7 +57,7 @@ function DriverCard (props)  {
 
             </Table>
           </TableContainer>
-          </Link>
+         
    
   );
 };

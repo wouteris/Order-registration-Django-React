@@ -6,7 +6,7 @@ import user from "./images/user.jpg";
 function DriverDetail  (props) {
   const [driver, setDriver] = useState(props.currentDriver)
   const history = useNavigate();
- 
+ console.log(driver)
   
   useEffect(() => {
 
@@ -30,7 +30,7 @@ function DriverDetail  (props) {
       <div className="center-div">
         
           <button onClick = {() =>history('/Driver')} className="ui button blue center">
-            Back to Location List
+            Back to Driver List
             
           </button>
         
