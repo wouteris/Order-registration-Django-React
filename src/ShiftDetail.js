@@ -30,7 +30,7 @@ function ShiftDetail  (props) {
       <div className="center-div">
         
           <button onClick = {() =>history('/shift')} className="ui button blue center">
-            Back to Location List
+            Back to Shift List
             
           </button>
         

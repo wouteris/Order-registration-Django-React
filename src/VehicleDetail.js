@@ -30,7 +30,7 @@ function VehicleDetail  (props) {
       <div className="center-div">
         
           <button onClick = {() =>history('/vehicle')} className="ui button blue center">
-            Back to Location List
+            Back to Vehicle List
             
           </button>
         
